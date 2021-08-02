@@ -1,0 +1,129 @@
+"""User fills out the following lists
+1. Title (goes at the top of the form)
+2. wide  (an array of widths for the different headers)
+3. hdr   (an array of headers for each column)
+4. module_list (this is the second column of the form)
+the program will generate the grid type form based on the above 4 lists. """
+_local_debug_ = 0
+
+h_bar_     = '\u2500'   # horizontal bar 1 char wide
+v_bar_     = '\u2502'   # Vertical Bar 1 char tall
+ul_corner_ = '\u250c'   # upper left corner
+ur_corner_ = '\u2510'   # upper right corner
+ll_corner_ = '\u2514'   # Lower left corner
+lr_corner_ = '\u2518'   # lower right corner
+v_bar_tr_  = '\u251c'   # Vertical bar split right
+v_bar_tl_  = '\u2524'   # Vertical bar split left
+h_bar_td_  = '\u252c'   # Horizontal bar split up
+h_bar_tu_  = '\u2534'   # horizontal bar split down
+ctr_cross_ = '\u253c'   # center cross (vertical and horizontal bar)
+
+title = "My Python Libraries Task Listing"
+wide = (4, 18, 6, 6, 6, 6, 6, 6, 6, 6)
+hdr = ("NDX", " Module Name", " Tsk1", " Tsk2", " Tsk3", " Tsk4", 
+       " Tsk5", " Tsk6", " Tsk7", " Tsk8")
+
+task_list = (('Task 1', 'Change Version and Date of affected modules'),
+             ('Task 2', 'Test Modules changed'),
+             ('Task 3', 'Run DocStrVerfiy to validate changes'),
+             ('Task 4', 'Update Library Document'),
+             ('Task 5', 'Backup Source and Document'),
+             ('Task 6', 'Archive Source and Document'),
+             ('Task 7', 'Commit Source Code (GIT)'),
+             ('Task 8', 'Commit Source Code (SVN)'), )
+# For one page max of 25 entries
+module_list = (("About", "box_char", "Clock_Face", "data_validation", "Env", 
+              "File_Log", "Gage", "Help", "Knob", "LED", 
+               "LED_D", "LED_SQ", "low_ascii", "my_math", "p_types", 
+               "print_colors", "Scrl_Notebook", "scrn_log",
+               "Seven_seg","Sixteen_seg", "to_log", "",
+               "", "", "",
+               ))
+if _local_debug_ == 1:
+    def my_report(st):
+        print(st, end='')
+
+
+need_max = 0
+sort_list = 0
+use_header = 1
+use_task_names = 1
+
+if need_max == 1:
+    mx = 0
+    for x in module_list:
+        if len(x) > mx:
+            mx = len(x)
+    my_report("Maximum Length of titles is {}\n".format(mx))
+    # in this example mx was 16
+else:
+    mx_wide = 80
+    count = 1
+    w_wide = 0
+    for x in range(0, len(wide)):
+        w_wide += wide[x] + 1
+    w_wide -= 1
+
+    b1 = int(mx_wide/2) - 2 - int(len(title)/2)
+    b2 = mx_wide - 1 - len(title) - b1
+    ln0 = ul_corner_ + h_bar_ * w_wide + ur_corner_ 
+    ln1 = v_bar_ + ' ' * b1 + title + ' ' * b2 + v_bar_ 
+    ln2 = ul_corner_
+    ln3 = v_bar_tr_
+    ln4 = v_bar_
+    ln5 = v_bar_tr_
+    ln6 = v_bar_
+    ln7 = v_bar_tr_
+    ln8 = v_bar_
+    ln9 = ll_corner_
+    b3 = mx_wide - wide[0] - wide[1] - 3
+    for x in range(0, len(wide)):
+        ln2 += (h_bar_ * wide[x]) + h_bar_td_
+        ln3 += (h_bar_ * wide[x]) + h_bar_td_
+        ln4 += f'{hdr[x]:{wide[x]}}{v_bar_}'
+        ln5 += (h_bar_ * wide[x]) + ctr_cross_
+        if x < 2:
+            ln7 += (h_bar_ * wide[x]) + ctr_cross_
+            ln9 += (h_bar_ * wide[x]) + h_bar_tu_
+        if x == 2:
+            ln9 += (h_bar_ * b3) + lr_corner_
+        if x >= 2:
+            ln7 += (h_bar_ * wide[x]) + h_bar_tu_
+    ln2 = ln2[:-1] + ur_corner_
+    ln3 = ln3[:-1] + v_bar_tl_
+    ln5 = ln5[:-1] + v_bar_tl_
+    ln7 = ln7[:-1] + v_bar_tl_
+    
+    if use_header == 1:
+        my_report(ln0 + '\n')
+        my_report(ln1 + '\n')
+        my_report(ln3 + '\n')
+    else:
+        my_report(ln2 + '\n')
+
+    my_report(ln4 + '\n')
+
+    # modules list
+    count = 1
+    s = ' '
+    for x in range(0, 25):
+        ln6 = f'{v_bar_}{count:{wide[0]-1}} {v_bar_} {module_list[x]:{wide[1]-1}}{v_bar_}'
+        for y in range(2, len(wide)):
+            ln6 += f'{s* wide[y]}{v_bar_}'
+        my_report(ln5 + '\n')
+        my_report(ln6 + '\n')
+        count += 1
+    my_report(ln7 + '\n')
+    # task List    
+    for x in range(26, 34):
+        ln8 = f'{v_bar_}{count:{wide[0]-1}} {v_bar_} '
+        ln8 += f'{task_list[x-26][0]:{wide[1]-1}}{v_bar_}'
+        b4 = b3 - len(task_list[x-26][1])
+        ln8 += f'{task_list[x-26][1]}{s* b4}{v_bar_}'
+        my_report(ln8 + '\n')
+        count += 1
+    my_report(ln9 + '\n')
+
+
+
+

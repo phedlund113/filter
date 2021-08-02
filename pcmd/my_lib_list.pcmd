@@ -1,0 +1,77 @@
+# from mylib.to_log import *
+
+title = "My Python Libraries Listing"
+
+hdr = ("NDX", "Module Name", "Comments", "DONE")
+
+# For one page max of 28 entries
+module_list = ("About", "box_char", "Clock_Face", "data_validation", "Env", 
+              "File_Log", "Gage", "Help", "Knob", "LED", 
+               "LED_D", "LED_SQ", "low_ascii", "my_math", "p_types", 
+               "print_colors", "Scrl_Notebook", "scrn_log",
+               "Seven_seg","Sixteen_seg", "to_log", "",
+               "", "", "", "", "", "",
+               )
+
+need_max = 0
+sort_list = 0
+use_header = 1
+
+if need_max == 1:
+    mx = 0
+    for x in module_list:
+        if len(x) > mx:
+            mx = len(x)
+    my_report("Maximum Length of titles is {}\n".format(mx), 'green')
+    # in this example mx was 16
+else:
+    a = 4
+    b = 18
+    c = 52
+    d = 4
+    # tl is the sum of all groups + (number of groups - 1)
+    tl = a + b + c + d + 3
+    count = 1
+    ln1 = "+{}+{}+{}+{}+\n".format('=' * a, '=' * b, '=' * c, '=' * d)
+    ln2 = "+{}+{}+{}+{}+\n".format('-' * a, '-' * b, '-' * c, '-' * d)
+    ln3 = "+{}+\n".format('=' * tl)
+    if use_header == 1:
+        my_report(ln3, 'green')
+        ln = tl - len(title)
+        y = int(ln / 2)
+        my_report("|{}{}{}|\n".format(' ' * (ln-y), title, ' ' * y), 'green')
+
+    # Header Section
+    my_report(ln1, 'green')
+    st1 = f"|{hdr[0]:>{a-1}} | {hdr[1]:^{b-1}}|{hdr[2]:^{c-1}} |{hdr[3]:{d-1}}|\n"
+    my_report(st1, 'green')
+    my_report(ln1, 'green')
+
+    # use if sort is desired
+    if sort_list == 1:
+        module_list = sorted(module_list, key=str.lower)
+
+    # data section
+    for x in module_list:
+        st1 = f"|{count:{a-1}} | {x:{b-1}}|{' ':{c-1}} |{' ':{d}}|\n"
+        my_report(st1, 'green')
+        my_report(ln2, 'green')
+        count = count + 1
+
+    # footer section
+#    comments = ("Note: Add the following code to files after include section",
+#                "#ifdef GLOBAL_SP_DEBUG",
+#                "#define SERIAL_DEBUG",
+#                "//  #undef SERIAL_DEBUG",
+#                "#endif")
+
+    comments = ("NOTE: any and all general notes go here that you want"
+                " at the bottom", "")
+    for x in comments:
+        ln = tl - 1 - len(x)
+        my_report("| {}{}|\n".format(x, ' ' * ln), 'green')
+
+    my_report(ln3, 'green')
+
+
+
