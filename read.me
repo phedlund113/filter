@@ -1,0 +1,118 @@
+Help File for Scan Program
+
+This program will open an input file, process it through a
+filter program and put the output into the output file.
+The operator needs to select an exiting input file, type
+in the name of the desired output file, select the filter
+to use then press the 'Run Filter' button. The program will
+display the number of lines created in the output file.
+
+-----------------------------------------------------------
+
+Filters are written in python.
+There are 4 golbal variables to pass data back and forth
+from the main program and the filter program.
+Use the template.flt file as your base and change the
+line with Purpose: in it to a valid description (35 char
+max)
+
+Filters are stored in the flt directory
+
+global infile
+    input file to scan
+
+global outfile
+    output file to place results
+
+global count
+    line counter for created lines in output Created in
+    filter program.
+
+global file_save
+    If set to 1 (there is a valid filename to save to)
+    write to file.
+
+-----------------------------------------------------------
+
+pcmd files are also python programs than can be called.
+
+pcmd files are stored in the pcmd directory
+
+-----------------------------------------------------------
+
+Extra Features
+To support the use of this program there are additional
+features added.
+
+Input file
+    This allows the user to select the file to filter.
+
+Output File
+    (Optional) this is the file where the filtered output
+    will be sent to. The output window will always show the
+    filtered output
+
+Filter file description drop down.
+    Select filter by description for use on the input file.
+    If a description is not defined in the filter file
+    the file name will be used.
+
+Re-Load
+    This button will search for and re-laod filters putting
+    the description in the drop down box
+Run Filter
+    This button executes selected filter on the input
+    file selected. Filters can be re-loaded and selected
+    via drop down box at the top of the program.
+
+View Input
+    This button will display the input file using notepad.
+
+Clear Output
+    This button clears the output window.
+
+Save Output
+    This button prompts the user for a filename to save
+    the output window to.
+
+About
+    This button displays the information about this
+    program.
+
+Help
+    This button opens a window and displays this help file.
+
+Run CMD
+    This button will execute the currently selected pcmd
+    file from the selection drop down list.
+
+Re-Load CMD
+    This button scans and reloads pcmd files
+
+CMD selection drop down
+    This dropdown shows avaiable pcmd files to run.
+
+Edit
+    This button calls notpad to allow editing a file or
+    creating a file.
+
+Quit
+    This button terminates the program.
+
+-----------------------------------------------------------
+
+In the samples direcotry are various files to use as input
+files to try filters on.
+
+Samples
+   Use the filter 'Displays Assertions, erros and Test Run'
+   on the sample file all-out.txt.
+
+   Use the filter 'Translate RapidEE saved reg file to'
+   on the sample file backup_180315_075801.reg
+
+   Use the filter 'Converts ascii hex to N2 Messages'
+   on the sample file P03.txt
+
+   Use the filter 'Create table of Param Names' on the
+   sample file ParamsINU.cs
