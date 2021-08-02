@@ -1,0 +1,45 @@
+#-------------------------------------------------------------------------------
+# Name:        template.flt
+# Purpose:     Generic Template File
+#              |    Maximum length of description    |
+#
+# Author:      USPEHED
+#
+# Created:
+# Copyright:   (c) USPEHED 2018
+# Licence:     <your licence>
+#-------------------------------------------------------------------------------
+
+# uses the following globals as input
+# infile, outfile, file_save, txt
+#
+# Sends back the following globals
+# count
+#
+# This filter
+#
+
+# from mylib.to_log import *
+
+global count
+count = 0
+
+
+fp = open(infile, 'r')
+if file_save == 1:
+    fo = open(outfile, 'w')
+for line in fp:
+    count = count + 1
+
+    # This is where the work is
+    if output_to.get() == 1 :
+        my_report("{:5d}: {}".format(count,line), 'green')
+    #  PROCESS LINE HERE
+    if output_to.get() == 2 :
+        my_report(line, 'green')
+
+    if file_save == 1:
+        fo.write(line)
+    # end of filter
+if file_save == 1:
+    fo.close()

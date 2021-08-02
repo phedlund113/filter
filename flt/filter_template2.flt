@@ -1,0 +1,84 @@
+#------------------------------------------------------------------------------
+# Name:        filter_template2.flt
+# Purpose:     Search for output buffer text
+#              |----Maximum length of description----|
+#
+# Author:      USPEHED
+#
+# Created:
+# Copyright:   (c) USPEHED 2018
+# Licence:     <your licence>
+#------------------------------------------------------------------------------
+
+# uses the following globals as input
+# infile, outfile, file_save, txt
+#
+# Sends back the following globals
+# count
+#
+# This filter
+#
+
+# from mylib.to_log import *
+
+global count
+count = 0
+found = 0
+# scn_val and scn_col must be of the same length.  It allows several
+# strings to be searhced for with a different color for each found string.
+
+scn_val = ('Output Buffer',)
+scn_col = ('cyan',)
+
+my_report(f'\nSearching for strings \n')
+##  for x in range(0, len(scn_val)):
+##      my_report(f'{scn_val[x]}  ', scn_col[x])
+##  my_report('\n')
+fp = open(infile, 'r')
+if file_save == 1:
+    fo = open(outfile, 'w')
+sel = output_to.get()
+
+arm = 0
+
+for line in fp:
+    count = count + 1
+#  This is where the work is
+#  None Selected
+    if sel == 0:
+        for y in range(0, len(scn_val)):
+            x = line.find(scn_val[y])
+            if x != -1:
+                found += 1
+#  Input Selected
+    if sel == 1:
+        show = 0
+        for y in range(0, len(scn_val)):
+            x = line.find(scn_val[y])
+            if x != -1:
+                my_report(f'{count:8} : {line}', scn_col[y])
+                found += 1
+                show = 1
+        if (show == 0):
+            my_report("{:5d}: {}".format(count, line), 'green')
+#  Output Selected
+    if sel == 2:
+        if arm == 1 and len(line) > 1:
+            if line.find('Hex Data') == -1:
+                my_report(f'{count:8} : {line}', scn_col[y])
+            arm = 0
+        for y in range(0, len(scn_val)):
+            x = line.find(scn_val[y])
+            if x != -1:
+##                my_report(f'{count:8} : {line}', scn_col[y])
+                arm = 1
+                found += 1
+
+    if file_save == 1:
+        fo.write(line)
+    # end of filter
+if file_save == 1:
+    fo.close()
+
+my_report(f'Lines Searched {count}\n')
+my_report(f'Search String(s) Found {found} times.\n')
