@@ -1,4 +1,4 @@
-# THIS PROJECT NOT READY FOR USE YET.
+
 Project name: Filter
  
 Author : Peter hedlund
