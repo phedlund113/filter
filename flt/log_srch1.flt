@@ -1,0 +1,95 @@
+#------------------------------------------------------------------------------
+# Name:        log_srch1.flt
+# Purpose:     Look for strings in log file
+#              |    Maximum length of description    |
+#
+# Author:      USPEHED
+#
+# Created:
+# Copyright:   (c) USPEHED 2018
+# Licence:     <your licence>
+#------------------------------------------------------------------------------
+
+# uses the following globals as input
+# infile, outfile, file_save, txt
+#
+# Sends back the following globals
+# count
+#
+# This filter
+#
+# To write to the text display of the program Use 
+#   my_report(_string_, _color_ )
+#   If color is not specified, 'green' will be used 
+#
+#   Colors available are 
+#    red, yellow, green, blue, cyan, white, violet, sky blue, 
+#    hot pink, lightgrey, brown4   
+
+
+# from mylib.to_log import *
+
+global count
+global scrn
+count = 0
+found = 0
+
+scn_val = ('Invalid Start', 'Incomplete Command','Retry', 'Bad data size',
+           'Sending NAK','Invalid Command')
+
+scn_col = ('sky blue', 'cyan', 'violet', 'red', 'yellow', 'hot pink')
+
+my_report(f'\nSearching for strings \n')
+for x in range(0, len(scn_val)):
+    my_report(f'{scn_val[x]}  ', scn_col[x])
+my_report('\n')
+my_report('------------------------------------------------------')
+my_report('------------------------------------------------------\n')
+fp = open(infile, 'r')
+if file_save == 1:
+    fo = open(outfile, 'w')
+sel = output_to.get()
+
+for line in fp:
+    count = count + 1
+
+#  This is where the work is
+#  None Selected
+    if sel == 0:
+        for y in range(0, len(scn_val)):
+            x = line.find(scn_val[y])
+            if x != -1:
+                found += 1
+        scrn.log_scrn_raw("{:5d}: {}".format(count, line)) 
+        if file_save == 1:
+            fo.write(line)
+#  Input Selected
+    if sel == 1:
+        show = 0
+        for y in range(0, len(scn_val)):
+            if file_save == 1:
+                fo.write(line)
+            x = line.find(scn_val[y])
+            if x != -1:
+                my_report(f'{count:8} : {line}', scn_col[y])
+                found += 1
+                show = 1
+        if (show == 0):        
+            scrn.log_scrn_raw("{:5d}: {}".format(count, line)) #  , 'green')
+#  Output Selected
+    if sel == 2:
+        for y in range(0, len(scn_val)):
+            x = line.find(scn_val[y])
+            if x != -1:
+                my_report(f'{count:8} : {line}', scn_col[y])
+                found += 1
+                if file_save == 1:
+                    fo.write(line)
+    # end of filter
+if file_save == 1:
+    fo.close()
+
+my_report('------------------------------------------------------')
+my_report('------------------------------------------------------\n')
+my_report(f'Lines Searched {count}\n')
+my_report(f'Search String(s) Found {found} times.\n')
