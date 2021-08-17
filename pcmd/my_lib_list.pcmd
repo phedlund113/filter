@@ -1,3 +1,14 @@
+#------------------------------------------------------------------------------
+# Name:        my_lib.list
+# Purpose:     Work list for my_lib library files.
+#              |    Maximum length of description    |
+#
+# Author:      USPEHED
+#
+# Created:
+# Copyright:   (c) USPEHED 2018
+# Licence:     <your licence>
+#------------------------------------------------------------------------------
 # from mylib.to_log import *
 
 title = "My Python Libraries Listing"

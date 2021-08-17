@@ -1,3 +1,15 @@
+#------------------------------------------------------------------------------
+# Name:        mk_test.pcmd
+# Purpose:     unicode form creator mylib 
+#              |    Maximum length of description    |
+#
+# Author:      USPEHED
+#
+# Created:
+# Copyright:   (c) USPEHED 2018
+# Licence:     <your licence>
+#------------------------------------------------------------------------------
+
 """User fills out the following lists
 1. Title (goes at the top of the form)
 2. wide  (an array of widths for the different headers)
