@@ -45,9 +45,9 @@ from mylib.about import *
 # DONE  Look in directory where program starts for intital filter files.
 # DONE  Remove all development code that is commented out.
 
-# TODO  Output file -- use same path as input file
-# TODO  In filter file and # NAME for description
-# TODO  Add Filter description to filter file
+# DONE  Output file -- use same path as input file
+# DONE  In filter file and # NAME for description
+# DONE  Add Filter description to filter file
 
 # =============================================================================
 
@@ -57,9 +57,9 @@ from mylib.about import *
 
 prog_id = {'progname': 'Filter.py',
            'title': 'Filter input to output',
-           'version': '3.0',
+           'version': '4.0',
            'date': "30 August 2018",
-           'rev_date': '29 July 2021',
+           'rev_date': '17 August 2021',
            'author': "Peter Hedlund",
            'description': 'To permit applying a filter to an input file\n'
            ' then send the output of the filter to another file.'}
@@ -170,7 +170,6 @@ def save_config():
 def my_report(wstr, color='green'):
     scrn.update = 1
     scrn.log_scrn_color(wstr, color)
-    # mylib.to_log.to_log_green(txt, wstr)
 
 
 def load_filter(is_reload):
@@ -192,6 +191,8 @@ def load_filter(is_reload):
                 y = line.find('Purpose:')
                 if y > 0 and y < 5:
                     strx = line[15:54]
+                # else:
+                #     strx = filters[x]
             fp.close()
             descrip.append(strx)
         if (is_reload):
@@ -201,7 +202,9 @@ def load_filter(is_reload):
 
 def load_cmds(is_reload):
     global cmds
+    global cdescrip
     cmds = []
+    cdescrip = []
     for file in glob.glob(os.path.dirname(sys.argv[0]) + '\\' + 'pcmd/*.pcmd'):
         cmds.append(os.path.split(file)[1])
     if len(cmds) == 0:
@@ -209,8 +212,20 @@ def load_cmds(is_reload):
         messagebox.showerror('COMMAND ERROR', 'No Command Found.\n Create Command then restart program.')
     else:
         cmds = sorted(cmds, key=str.casefold)
+        for x in range(0, len(cmds)):
+            strx = cmds[x]
+            fp = open(base_dir + '//pcmd//' + cmds[x], 'r')
+            for line in fp:
+                y = line.find('Purpose:')
+                if y > 0 and y < 5:
+                    strx = line[15:54]
+                # else:
+                #     strx = cmds[x]
+            fp.close()
+            cdescrip.append(strx)
+
         if (is_reload):
-            cmd_sel.config(value=cmds)
+            cmd_sel.config(value=cdescrip)
             cmd_sel.current(0)
 
 
@@ -246,11 +261,11 @@ def process_file():
     """
     global infile
     global outfile
-    global txt
     global file_save
     # global output_to_console
     global count
     global output_to
+    abort_filter.set(0)
     if filters[prt_sel.current()] == '--NONE--':
         scrn.log_scrn_color("NO FILTERS FOUND TO USE!!\n", 'red')
         scrn.log_scrn_color("ADD/CREATE FILTER FILE,\n", 'yellow')
@@ -308,7 +323,6 @@ def save_log():
     """
     This function will save the log window to a file
     """
-    # mylib.to_log.save_log(txt, mainframe)
     scrn.save_scrn(mainframe)
 
 
@@ -320,7 +334,6 @@ def clear_log():
     """
     This function will clear the log window
     """
-    # mylib.to_log.clear_log(txt)
     scrn.clear_scrn()
     lab_cnt.config(text='')
 
@@ -331,6 +344,10 @@ def test_edit():
     # sys.argv = ['simpleEd.py','all-out.flt']
     # simpleEd.SimpleEditor()
     # execfile('text_ed2.py')
+
+
+def abort_flt():
+    abort_filter.set(1)
 
 
 def about_cmd():
@@ -344,6 +361,7 @@ def help_cmd():
 def quit_prog():
     save_config()
     root.destroy()
+
 
 def config_quit():
     global top 
@@ -411,7 +429,8 @@ def config():
 root = Tk()
 #  prevent window resizing.
 top = None
-#  Variable section
+#  region Variable Area
+
 c_pos = IntVar()
 c_pos_x = IntVar()
 c_pos_y = IntVar()
@@ -430,9 +449,12 @@ txt_load = StringVar()
 my_path = StringVar()
 use_srm = IntVar()
 output_to = IntVar()
-
+abort_filter = IntVar()
+abort_filter.set(0)
 default_config()
 load_config()
+
+#   endregion Variable Area
 
 #  GUI Section
 root.resizable(0, 0)
@@ -443,6 +465,7 @@ mainframe.grid(column=1, row=3, sticky=(N, W, E, S))
 mainframe.grid_propagate(0)
 mainframe.tk.call('tk', 'scaling', 1.2)
 
+#  region Style Section
 #  Style Section
 s1 = ttk.Style()
 s1.configure('red.TButton', background='Red', relief='sunken')
@@ -460,11 +483,13 @@ s7 = ttk.Style()
 s7.configure('magenta.TButton', background='Magenta')
 
 mystyle='SUNKEN'
+#  endregion Style Section
 
 load_filter(0)
 
 load_cmds(0)
 
+#  region Upper Command Area
 iflf = ttk.Labelframe(mainframe,text='Input File', relief=RAISED, borderwidth=4)
 iflf.grid(column=0, row=0, columnspan=2)
 btn_if = ttk.Button(iflf, text="InFile", command=input_file, width=15)
@@ -487,60 +512,63 @@ prt_sel = ttk.Combobox(fflf, state="readonly", width=35, height=20, values=descr
 prt_sel.grid(column=0, row=0, padx=10, pady=5, columnspan=2)
 prt_sel.current(c_filt_selected.get())
 
+#  endregion Upper Command Area
 
 # -------------------
 #  Text box Widget
 # -------------------
 scrn = mylib.scrn_log.scrn_log(mainframe, 80, 34, 'lightgreen', 'gray15', 0, 2, 9, 20)
 
+#  region Lower Command Area
 cmlf = ttk.Labelframe(mainframe, text='Commands', borderwidth=4,style='black.TLabelframe')
 cmlf.grid(column=0, row=24, columnspan=10, rowspan=2, sticky='w', padx=5)
 
-lbl1 = ttk.Label(cmlf, text='Filter  Options')
-lbl1.grid(column=0, row=0, padx=15, pady=5)
-r1 = Radiobutton(cmlf, text="[ OPT 1 ]", variable=output_to, value=0)
-r1.grid(column=0, row=1, sticky='w')
-r2 = Radiobutton(cmlf, text="[ OPT 2 ]", variable=output_to, value=1)
-r2.grid(column=0, row=2, sticky='w')
-r3 = Radiobutton(cmlf, text="[ OPT 3 ]", variable=output_to, value=2)
-r3.grid(column=0, row=3, sticky='w')
 output_to.set(c_filt_opt.get())
 
-btn = (("Run Filter",    process_file, 'green.TButton', 1, 0),
-       ('Run CMD',       cmd_run,      'green.TButton', 1, 1),
-       ('View Input',    list_cmd,     'blue.TButton',  3, 0),
-       ('Re-Load CMD',   reload_cmds,  '',              3, 1),
-       ('Save Output',   save_log,     'blue.TButton',  7, 0),
-       ('Output 2 Clip', log2clip,     'blue.TButton',  7, 1),
-       ('Clear Output',  clear_log,    'blue.TButton',  7, 2), 
-       ('Notepad',       test_edit,    'red.TButton',   9, 0),
-       ('About',         about_cmd,    'cyan.TButton',  9, 1),
-       ('Help',          help_cmd,     'cyan.TButton',  9, 2),
-       ('Quit',          quit_prog,    'red.TButton',   9, 3)  )
+ctrl = (('BTN', 1, 0, 'Run Filter',    process_file, 'green.TButton'),
+        ('BTN', 1, 1, 'Run CMD',       cmd_run,      'green.TButton'),
+        ('BTN', 3, 0, 'Abort Filter',  abort_flt,    'green.TButton'),
+        ('BTN', 1, 2, 'View Input',    list_cmd,     'blue.TButton'),
+        ('BTN', 4, 1, 'Re-Load CMD',   reload_cmds,  None          ),
+        ('BTN', 7, 0, 'Save Output',   save_log,     'blue.TButton'),
+        ('BTN', 7, 1, 'Output 2 Clip', log2clip,     'blue.TButton'),
+        ('BTN', 7, 2, 'Clear Output',  clear_log,    'blue.TButton'), 
+        ('BTN', 9, 0, 'Notepad',       test_edit,    'red.TButton' ),
+        ('BTN', 9, 1, 'About',         about_cmd,    'cyan.TButton'),
+        ('BTN', 9, 2, 'Help',          help_cmd,     'cyan.TButton'),
+        ('BTN', 9, 3, 'Quit',          quit_prog,    'red.TButton' ),
+        ('RDO', 0, 1, '[ OPT 1 ]',     output_to,    0),
+        ('RDO', 0, 2, '[ OPT 2 ]',     output_to,    1),
+        ('RDO', 0, 3, '[ OPT 3 ]',     output_to,    2),
+        ('LBL', 0, 0, 'Filter Options'),
+        ('LBL', 6, 1, '   '),
+        ('LBL', 8, 1, '   '),
+        ('LBL',10, 1, '   '),
+          )
 
-for x in range(0, len(btn)):
-    btn_x = ttk.Button(cmlf, text=btn[x][0], command=btn[x][1], width=15,style=btn[x][2])
-    btn_x.grid(column=btn[x][3], row=btn[x][4], padx=5, pady=5)
-
-# lbl = ttk.Label(cmlf, text='   ', width=5)
-# lbl.grid(column=5, row=2, padx=15, pady=5)
+for x in range(0, len(ctrl)):
+    if ctrl[x][0] == 'BTN':
+        btn_x = ttk.Button(cmlf, text=ctrl[x][3], command=ctrl[x][4], 
+            width=15, style=ctrl[x][5])
+        btn_x.grid(column=ctrl[x][1], row=ctrl[x][2], padx=15, pady=5)
+    elif ctrl[x][0] == 'LBL':
+        lbl1 = ttk.Label(cmlf, text=ctrl[x][3])
+        lbl1.grid(column=ctrl[x][1], row=ctrl[x][2], padx=15, pady=5)
+    elif ctrl[x][0] == 'RDO':
+        r1 = Radiobutton(cmlf, text=ctrl[x][3], variable=ctrl[x][4], 
+            value =ctrl[x][5])
+        r1.grid(column=ctrl[x][1], row=ctrl[x][2], sticky='w')
 
 lab_cnt = ttk.Label(cmlf,width = 15)
 lab_cnt.grid(column=2, row=0, padx=15, pady=5)
 
-cmd_sel = ttk.Combobox(cmlf, state="readonly", width=15, height=20, values=cmds)
-cmd_sel.grid(column=4, row=1, padx=15, columnspan=2, pady=5, sticky='w')
+cmd_sel = ttk.Combobox(cmlf, state="readonly", width=35, height=20, values=cdescrip)
+cmd_sel.grid(column=2, row=1, padx=15, columnspan=2, pady=5, sticky='w')
 cmd_sel.current(c_pcmd_selected.get())
 
-test = ttk.Label(cmlf, text='  ')
-test.grid(column=6, row=1, padx=15, pady=5)
-test = ttk.Label(cmlf, text='  ')
-test.grid(column=8, row=1, padx=15, pady=5)
-
-test = ttk.Label(cmlf, text='  ')
-test.grid(column=10, row=1, padx=15, pady=5)
 conf = ttk.Button(cmlf, text='C\nO\nN\nF\nI\nG\n', command=config, width=3,style='black.TButton' )
 conf.grid(column=11, row=0, rowspan=3)
+#  endregion Lower Command Area
 
 for child in cmlf.winfo_children():
     child.grid_configure(padx=0, pady=5)

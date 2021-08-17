@@ -1,11 +1,15 @@
-
 Project name: Filter
  
 Author : Peter hedlund
 
 Python Version : created in python 3.7
 
-Code Version : 3.00
+Code Version : 4.00
+
+# UPDATE
+1. Minor lower commands area layout changes.
+2. Allow Purpose in pcmd files as well as flt files to better describe the
+   pcmd.
 
 Library Modules Needed :
 * mylib/about.py
@@ -35,12 +39,14 @@ will put 'Look for strings in log file' in the combo box.
 Table of Contents: 
 * filter.pyw
 * filter.ini
+* read.me
 * flt/
 * pcmd/
 
-## Main Program 
 <!-- use for desktop -->
 <!-- 
+## Main Program 
+
 ![Main Program](img/filter_1.png)
 
 ## Config Screen
